@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class SaveUserUseCase {
 
-    private final  UserRespository userRepository;
+    private final UserRespository userRepository;
     private static final Logger log = Logger.getLogger(SaveUserUseCase.class.getName());
 
     public Mono<User> execute(User user) {
@@ -46,7 +46,7 @@ public class SaveUserUseCase {
         }
 
         if (Optional.ofNullable(user.getSalary()).isEmpty() || user.getSalary() <= 0 || user.getSalary() > 15000000) {
-            log.warning(String.format(DomainError.INVALID_FIELD.getMessage()));
+            log.warning(DomainError.INVALID_SALARY.getMessage());
             throw new InvalidSalaryException(DomainError.INVALID_SALARY.getMessage());
         }
 
