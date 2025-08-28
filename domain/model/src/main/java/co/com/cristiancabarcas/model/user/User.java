@@ -1,6 +1,7 @@
 package co.com.cristiancabarcas.model.user;
-import lombok.Builder;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

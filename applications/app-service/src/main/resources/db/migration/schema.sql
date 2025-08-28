@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS users (
     birth_date DATE,
     phone VARCHAR(30),
     address VARCHAR(200),
-    email VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
     salary DOUBLE
 );

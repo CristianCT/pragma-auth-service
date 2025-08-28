@@ -5,7 +5,5 @@ import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
-public interface MyReactiveRepository extends ReactiveCrudRepository<UserEntity, String> {
-
-    Mono<UserEntity> findByEmail(String email);
+public interface MyReactiveRepository extends ReactiveCrudRepository<UserEntity, String>, ReactiveQueryByExampleExecutor<UserEntity> {
 }

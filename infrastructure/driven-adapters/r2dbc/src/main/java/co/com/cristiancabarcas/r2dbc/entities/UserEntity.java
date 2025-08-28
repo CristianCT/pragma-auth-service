@@ -2,17 +2,22 @@ package co.com.cristiancabarcas.r2dbc.entities;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
-import java.util.Date;
 
+@Setter
 @Getter
 @Builder
 @Table("users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
 
     @Id
