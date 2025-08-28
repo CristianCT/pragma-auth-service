@@ -32,6 +32,8 @@ public class Handler {
     @Operation(summary = "Create new user", description = "Registers a new user in the system")
     public Mono<ResponseEntity<CustomResponse<UserResponse>>> createNewUser(@RequestBody UserRequest userRequest) {
 
+        log.info("::::: INIT CREATE USER :::::");
+
         return saveUserUseCase.execute(mapper.map(userRequest, User.class))
                 .doOnNext(user -> log.info("User created success: " + user.getName() + " " + user.getLastName()))
                 .map(user -> mapper.map(user, UserResponse.class))

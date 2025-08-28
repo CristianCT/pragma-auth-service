@@ -1,4 +1,4 @@
-package co.com.cristiancabarcas.api.utils.handlerexception;
+package co.com.cristiancabarcas.api.utils.handlererror;
 
 import co.com.cristiancabarcas.api.dtos.CustomResponse;
 import co.com.cristiancabarcas.api.utils.BuilderResponse;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.logging.Logger;
 
 @RestControllerAdvice()
-public class HandlerException {
+public class HandlerControllerErrors {
 
-    private static final Logger log = Logger.getLogger(HandlerException.class.getName());
+    private static final Logger log = Logger.getLogger(HandlerControllerErrors.class.getName());
 
     @ExceptionHandler(UserAlreadyExistException.class)
     public ResponseEntity<CustomResponse<Void>> handleException(UserAlreadyExistException ex) {
