@@ -17,9 +17,11 @@ public class User {
 
     private String name;
     private String lastName;
+    private String identificationNumber;
     private LocalDate birthDate;
     private String address;
     private String phone;
     private String email;
+    private String password;
     private Double salary;
 }

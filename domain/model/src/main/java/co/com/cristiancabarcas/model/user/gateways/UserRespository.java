@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface UserRespository {
 
-    Mono<User> save(User user);
+    Mono<User> save(User user, Integer roleId);
 }

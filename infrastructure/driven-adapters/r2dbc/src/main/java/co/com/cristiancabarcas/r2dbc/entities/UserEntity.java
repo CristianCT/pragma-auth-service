@@ -25,9 +25,12 @@ public class UserEntity {
     private String id;
     private String name;
     private String lastName;
+    private String identificationNumber;
     private String email;
     private String phone;
     private String address;
+    private String password;
+    private Integer roleId;
     private LocalDate birthDate;
     private Double salary;
 }

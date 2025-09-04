@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    id VARCHAR(100) PRIMARY KEY DEFAULT (uuid()),
+     id VARCHAR(100) PRIMARY KEY DEFAULT (uuid()),
     name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     birth_date DATE,

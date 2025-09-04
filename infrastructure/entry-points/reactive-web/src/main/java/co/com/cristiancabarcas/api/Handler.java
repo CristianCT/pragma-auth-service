@@ -34,7 +34,7 @@ public class Handler {
 
         log.info("::::: INIT CREATE USER :::::");
 
-        return saveUserUseCase.execute(mapper.map(userRequest, User.class))
+        return saveUserUseCase.execute(mapper.map(userRequest, User.class), userRequest.getRole())
                 .doOnNext(user -> log.info("User created success: " + user.getName() + " " + user.getLastName()))
                 .map(user -> mapper.map(user, UserResponse.class))
                 .map(BuilderResponse::buildCreatedUser);

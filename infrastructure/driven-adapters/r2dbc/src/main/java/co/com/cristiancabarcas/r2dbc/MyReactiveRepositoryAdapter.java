@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Repository
@@ -26,9 +27,10 @@ public class MyReactiveRepositoryAdapter
 
     @Override
     @Transactional
-    public Mono<User> save(User user) {
+    public Mono<User> save(User user, Integer roleId) {
 
         UserEntity userEntity = mapper.map(user, UserEntity.class);
+        userEntity.setRoleId(Optional.ofNullable(roleId).orElse(2));
 
         log.info("Saving user: " + userEntity.getName());
         return repository.save(userEntity)

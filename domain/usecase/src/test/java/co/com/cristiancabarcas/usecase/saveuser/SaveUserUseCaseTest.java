@@ -40,21 +40,24 @@ class SaveUserUseCaseTest {
         user = User.builder()
                 .name("name")
                 .lastName("lastName")
+                .identificationNumber("1234567890")
                 .email("c@gmail.com")
                 .birthDate(localDate)
                 .salary(1000000.0)
                 .phone("1234567890")
                 .address("address")
+                .password("TEST")
                 .build();
 
-        when(userRepository.save(any(User.class)))
+        when(userRepository.save(any(User.class), any()))
                 .thenReturn(Mono.just(user));
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .assertNext(result -> {
                     assertNotNull(result);
                     assertEquals("name", result.getName());
                     assertEquals("lastName", result.getLastName());
+                    assertEquals("1234567890", result.getIdentificationNumber());
                     assertEquals("c@gmail.com", result.getEmail());
                     assertEquals(1000000.0, result.getSalary());
                     assertEquals(localDate, result.getBirthDate());
@@ -63,7 +66,7 @@ class SaveUserUseCaseTest {
                 })
                 .verifyComplete();
 
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).save(any(User.class), any());
     }
 
     @Test
@@ -72,38 +75,63 @@ class SaveUserUseCaseTest {
         user = User.builder()
                 .name("name")
                 .lastName("lastName")
+                .identificationNumber("1234567890")
                 .email("c@gmail.com")
                 .birthDate(localDate)
                 .salary(1000000.0)
                 .phone("1234567890")
                 .address("address")
+                .password("TEST")
                 .build();
 
-        when(userRepository.save(any(User.class)))
+        when(userRepository.save(any(User.class), any()))
                 .thenReturn(Mono.empty());
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(UserAlreadyExistException.class::isInstance)
                 .verify();
 
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).save(any(User.class), any());
     }
 
     @Test
-    void executeInvalidFieldName() {
+    void executeInvalidFieldIdentificationNumber() {
 
         user = User.builder()
-                .name("")
+                .identificationNumber("")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
         user = User.builder()
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
+                .expectErrorMatches(InvalidFieldException.class::isInstance)
+                .verify();
+
+    }
+
+
+    @Test
+    void executeInvalidFieldName() {
+
+        user = User.builder()
+                .identificationNumber("1234567890")
+                .name("")
+                .build();
+
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
+                .expectErrorMatches(InvalidFieldException.class::isInstance)
+                .verify();
+
+        user = User.builder()
+                .identificationNumber("1234567890")
+                .build();
+
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
@@ -113,19 +141,21 @@ class SaveUserUseCaseTest {
     void executeInvalidFieldLastName() {
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
@@ -135,21 +165,23 @@ class SaveUserUseCaseTest {
     void executeInvalidFieldEmail() {
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
@@ -159,34 +191,37 @@ class SaveUserUseCaseTest {
     void executeInvalidFieldSalary() {
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
                 .salary(0.0)
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidSalaryException.class::isInstance)
                 .verify();
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
                 .salary(15000001.0)
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidSalaryException.class::isInstance)
                 .verify();
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidSalaryException.class::isInstance)
                 .verify();
 
@@ -196,6 +231,7 @@ class SaveUserUseCaseTest {
     void executeInvalidFieldPhone() {
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
@@ -203,18 +239,19 @@ class SaveUserUseCaseTest {
                 .phone("")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
                 .salary(1000000.0)
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
@@ -224,6 +261,7 @@ class SaveUserUseCaseTest {
     void executeInvalidFieldAddress() {
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
@@ -232,11 +270,12 @@ class SaveUserUseCaseTest {
                 .address("")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
@@ -244,7 +283,7 @@ class SaveUserUseCaseTest {
                 .phone("1234567890")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 
@@ -254,6 +293,7 @@ class SaveUserUseCaseTest {
     void executeInvalidFieldBirthDate() {
 
         user = User.builder()
+                .identificationNumber("1234567890")
                 .name("name")
                 .lastName("lastName")
                 .email("c@gmail.com")
@@ -262,7 +302,43 @@ class SaveUserUseCaseTest {
                 .address("address")
                 .build();
 
-        StepVerifier.create(saveUserUseCase.execute(this.user))
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
+                .expectErrorMatches(InvalidFieldException.class::isInstance)
+                .verify();
+
+    }
+
+    @Test
+    void executeInvalidFieldPassword() {
+
+        user = User.builder()
+                .identificationNumber("1234567890")
+                .name("name")
+                .lastName("lastName")
+                .email("c@gmail.com")
+                .salary(1000000.0)
+                .phone("1234567890")
+                .address("address")
+                .birthDate(localDate)
+                .password("")
+                .build();
+
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
+                .expectErrorMatches(InvalidFieldException.class::isInstance)
+                .verify();
+
+        user = User.builder()
+                .identificationNumber("1234567890")
+                .name("name")
+                .lastName("lastName")
+                .email("c@gmail.com")
+                .salary(1000000.0)
+                .phone("1234567890")
+                .address("address")
+                .birthDate(localDate)
+                .build();
+
+        StepVerifier.create(saveUserUseCase.execute(this.user, 1))
                 .expectErrorMatches(InvalidFieldException.class::isInstance)
                 .verify();
 

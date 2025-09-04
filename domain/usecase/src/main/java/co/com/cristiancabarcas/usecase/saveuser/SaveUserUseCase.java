@@ -18,17 +18,22 @@ public class SaveUserUseCase {
     private final UserRespository userRepository;
     private static final Logger log = Logger.getLogger(SaveUserUseCase.class.getName());
 
-    public Mono<User> execute(User user) {
+    public Mono<User> execute(User user, Integer roleId) {
 
         return Mono.just(user)
                 .map(this::validUser)
-                .flatMap(userRepository::save)
+                .flatMap(newUser -> userRepository.save(newUser, roleId))
                 .switchIfEmpty(Mono.error(new UserAlreadyExistException(DomainError.USER_ALREADY_EXIST.getMessage())))
                 .onErrorResume(Mono::error);
     }
 
 
     private User validUser(User user) {
+
+        if (Optional.ofNullable(user.getIdentificationNumber()).isEmpty() || user.getIdentificationNumber().isBlank()) {
+            log.warning(String.format(DomainError.INVALID_FIELD.getMessage(), "identification number"));
+            throw new InvalidFieldException("identification number");
+        }
 
         if (Optional.ofNullable(user.getName()).isEmpty() || user.getName().isBlank()) {
             log.warning(String.format(DomainError.INVALID_FIELD.getMessage(), "name"));
@@ -63,6 +68,11 @@ public class SaveUserUseCase {
         if (Optional.ofNullable(user.getBirthDate()).isEmpty()) {
             log.warning(String.format(DomainError.INVALID_FIELD.getMessage(), "birth date"));
             throw new InvalidFieldException("birth date");
+        }
+
+        if (Optional.ofNullable(user.getPassword()).isEmpty() || user.getPassword().isBlank()) {
+            log.warning(String.format(DomainError.INVALID_FIELD.getMessage(), "password"));
+            throw new InvalidFieldException("password");
         }
 
         log.info("User validation successful");
