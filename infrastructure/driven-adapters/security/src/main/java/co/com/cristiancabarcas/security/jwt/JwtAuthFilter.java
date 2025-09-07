@@ -14,6 +14,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -22,6 +23,10 @@ public class JwtAuthFilter implements WebFilter {
 
     private final JwtUtil jwtUtil;
     private final List<String> publicPaths = List.of("/api/v1/login");
+    private final Map<String, List<String>> rolePermissions = Map.of(
+            "ADMIN", List.of("/api/v1/user"),
+            "ADVISOR", List.of("/api/v1/user")
+    );
     private static final Logger log = Logger.getLogger(JwtAuthFilter.class.getName());
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
@@ -48,6 +53,11 @@ public class JwtAuthFilter implements WebFilter {
 
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
+            if (!hasRolePermissions(role, path)) {
+                log.warning("Forbidden: Insufficient permissions");
+                return unauthorizedResponse(exchange, "Forbidden: Insufficient permissions");
+            }
+
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
 
@@ -57,6 +67,11 @@ public class JwtAuthFilter implements WebFilter {
 
         log.warning("Invalid token");
         return unauthorizedResponse(exchange, "Unauthorized: Invalid token");
+    }
+
+    private boolean hasRolePermissions(String role, String path) {
+        return rolePermissions.containsKey(role)
+                && rolePermissions.get(role).contains(path);
     }
 
     private boolean isPublicPath(String path) {
