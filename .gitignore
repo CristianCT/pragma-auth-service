@@ -337,8 +337,6 @@ build-cache
 
 # Environment variables file
 .env
-.env.*.local
-.env.local
 
 # Local configuration file
 local.env
