@@ -2,6 +2,8 @@ package co.com.cristiancabarcas.r2dbc;
 
 import co.com.cristiancabarcas.model.user.User;
 import co.com.cristiancabarcas.r2dbc.entities.UserEntity;
+import co.com.cristiancabarcas.r2dbc.repositories.user.UserReactiveRepository;
+import co.com.cristiancabarcas.r2dbc.repositories.user.UserReactiveRepositoryAdapter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,13 +23,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MyReactiveRepositoryAdapterTest {
+class UserReactiveRepositoryAdapterTest {
 
     @InjectMocks
-    MyReactiveRepositoryAdapter repositoryAdapter;
+    UserReactiveRepositoryAdapter repositoryAdapter;
 
     @Mock
-    MyReactiveRepository repository;
+    UserReactiveRepository repository;
 
     @Mock
     ObjectMapper mapper;

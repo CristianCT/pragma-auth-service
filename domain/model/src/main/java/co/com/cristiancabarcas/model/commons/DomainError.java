@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public enum DomainError {
     USER_ALREADY_EXIST("User already exist", "User already exists"),
+    USER_NOT_FOUND("User not found", "User with email %s not found"),
+    INCORRECT_PASSWORD("Incorrect password", "The password is incorrect"),
     INVALID_FIELD("Invalid field", "The field %s is required and must not be empty"),
     INVALID_SALARY("Invalid salary", "Salary must be greater than zero and less than 15000000");
 

@@ -42,3 +42,10 @@ adapters:
     database: ${DATABASE_NAME:pragma}
     username: ${DATABASE_USERNAME:pragma}
     password: ${DATABASE_PASSWORD:pragma}
+
+security:
+  bcrypt:
+    strength: ${BCRYPT_STRENGTH:12}
+  jwt:
+    secret: ${JWT_SECRET:pragma}
+    expiration: ${JWT_EXPIRATION:86400}

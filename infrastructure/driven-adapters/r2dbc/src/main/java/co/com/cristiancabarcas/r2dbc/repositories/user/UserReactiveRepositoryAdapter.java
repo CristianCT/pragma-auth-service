@@ -1,4 +1,4 @@
-package co.com.cristiancabarcas.r2dbc;
+package co.com.cristiancabarcas.r2dbc.repositories.user;
 
 import co.com.cristiancabarcas.model.user.User;
 import co.com.cristiancabarcas.model.user.gateways.UserRespository;
@@ -9,19 +9,19 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.Optional;
 import java.util.logging.Logger;
 
 @Repository
-public class MyReactiveRepositoryAdapter
-        extends ReactiveAdapterOperations<User, UserEntity, String, MyReactiveRepository>
+public class UserReactiveRepositoryAdapter
+        extends ReactiveAdapterOperations<User, UserEntity, String, UserReactiveRepository>
         implements UserRespository {
 
-    private static final Logger log = Logger.getLogger(MyReactiveRepositoryAdapter.class.getName());
+    private static final Logger log = Logger.getLogger(UserReactiveRepositoryAdapter.class.getName());
 
-
-    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
+    public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
         super(repository, mapper, d -> mapper.map(d, User.class));
     }
 
@@ -39,6 +39,18 @@ public class MyReactiveRepositoryAdapter
                         DuplicateKeyException.class.equals(throwable.getClass())
                                 ? Mono.empty()
                                 : Mono.error(throwable));
+    }
+
+    @Override
+    @Transactional
+    public Mono<Tuple2<User, Integer>> findByEmail(String email) {
+
+        log.info("Finding user by email: " + email);
+        return repository.findByEmail(email)
+                .flatMap(userEntity -> Mono.zip(
+                        Mono.just(mapper.map(userEntity, User.class)),
+                        Mono.just(userEntity.getRoleId())))
+                .onErrorResume(Mono::error);
     }
 
 }

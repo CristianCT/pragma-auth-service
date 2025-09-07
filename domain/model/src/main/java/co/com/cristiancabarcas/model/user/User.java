@@ -1,5 +1,6 @@
 package co.com.cristiancabarcas.model.user;
 
+import co.com.cristiancabarcas.model.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,4 +25,5 @@ public class User {
     private String email;
     private String password;
     private Double salary;
+    private Role role;
 }

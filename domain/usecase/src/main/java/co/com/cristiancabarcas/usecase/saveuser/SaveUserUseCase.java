@@ -5,6 +5,7 @@ import co.com.cristiancabarcas.model.commons.errors.InvalidFieldException;
 import co.com.cristiancabarcas.model.commons.errors.InvalidSalaryException;
 import co.com.cristiancabarcas.model.commons.errors.UserAlreadyExistException;
 import co.com.cristiancabarcas.model.user.User;
+import co.com.cristiancabarcas.model.user.gateways.PasswordRepository;
 import co.com.cristiancabarcas.model.user.gateways.UserRespository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -16,12 +17,14 @@ import java.util.logging.Logger;
 public class SaveUserUseCase {
 
     private final UserRespository userRepository;
+    private final PasswordRepository passwordRepository;
     private static final Logger log = Logger.getLogger(SaveUserUseCase.class.getName());
 
     public Mono<User> execute(User user, Integer roleId) {
 
         return Mono.just(user)
                 .map(this::validUser)
+                .map(newUser -> newUser.toBuilder().password(passwordRepository.encrypt(user.getPassword())).build())
                 .flatMap(newUser -> userRepository.save(newUser, roleId))
                 .switchIfEmpty(Mono.error(new UserAlreadyExistException(DomainError.USER_ALREADY_EXIST.getMessage())))
                 .onErrorResume(Mono::error);
