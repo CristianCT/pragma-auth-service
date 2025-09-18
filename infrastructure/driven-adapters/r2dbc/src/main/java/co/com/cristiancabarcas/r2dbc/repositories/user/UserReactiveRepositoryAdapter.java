@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -43,12 +44,13 @@ public class UserReactiveRepositoryAdapter
 
     @Override
     @Transactional
-    public Mono<Tuple2<User, Integer>> findByEmail(String email) {
+    public Mono<Tuple3<String, String, Integer>> findByEmail(String email) {
 
         log.info("Finding user by email: " + email);
         return repository.findByEmail(email)
                 .flatMap(userEntity -> Mono.zip(
-                        Mono.just(mapper.map(userEntity, User.class)),
+                        Mono.just(userEntity.getId()),
+                        Mono.just(userEntity.getPassword()),
                         Mono.just(userEntity.getRoleId())))
                 .onErrorResume(Mono::error);
     }

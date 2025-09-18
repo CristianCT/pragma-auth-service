@@ -9,7 +9,6 @@ spring:
     url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     user: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-
   h2:
     console:
       enabled: true

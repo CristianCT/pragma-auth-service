@@ -21,7 +21,7 @@ public class SaveUserUseCase {
     private static final Logger log = Logger.getLogger(SaveUserUseCase.class.getName());
 
     public Mono<User> execute(User user, Integer roleId) {
-
+        log.info("::::: INIT SAVE USER :::::");
         return Mono.just(user)
                 .map(this::validUser)
                 .map(newUser -> newUser.toBuilder().password(passwordRepository.encrypt(user.getPassword())).build())

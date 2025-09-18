@@ -31,18 +31,18 @@ public class AuthUserUseCase {
         return Mono.just(validateCredentials(email, password))
                 .filter(isValid -> isValid.equals(true))
                 .flatMap(isValid -> userRespository.findByEmail(email))
-                .filter(user -> validatePassword(user.getT1(), password))
-                .flatMap(user -> roleRepository.findById(user.getT2())
-                        .flatMap(role -> Mono.zip(Mono.just(user.getT1()), Mono.just(role))))
+                .filter(user -> validatePassword(user.getT2(), password))
+                .flatMap(user -> roleRepository.findById(user.getT3())
+                        .flatMap(role -> Mono.zip(Mono.just(user.getT1()), Mono.just(role.getName()))))
                 .flatMap(user -> jwtAuthRepository
-                        .generateToken(user.getT1().getIdentificationNumber(), user.getT2().getName()))
+                        .generateToken(user.getT1(), user.getT2()))
                 .switchIfEmpty(Mono.error(new UserNotFoundException(String.format(DomainError.USER_NOT_FOUND.getMessage(), email))))
                 .onErrorResume(Mono::error);
     }
 
-    private boolean validatePassword(User user, String password) {
+    private boolean validatePassword(String userPassword, String password) {
 
-        if (!passwordRepository.matches(password, user.getPassword())) {
+        if (!passwordRepository.matches(password, userPassword)) {
             log.warning(DomainError.INCORRECT_PASSWORD.getMessage());
             throw new IncorrectPasswordException(DomainError.INCORRECT_PASSWORD.getMessage());
         }
